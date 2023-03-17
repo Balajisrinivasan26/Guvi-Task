@@ -1,241 +1,146 @@
+let data;
 
-var gdata;
-$("#logout").on('click',()=>{
-    // document.cookie = "username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    var email=localStorage.getItem("username");
-    localStorage.removeItem("username");
-    var logout_data={
-        logout:true,
-        email:email
-    }
-    $.ajax({
-        type: "POST",
-        url: "/guvi/php/profile.php",
-        data: logout_data,
-
-        success: (response) => {
-            console.log(response)
-            var res = jQuery.parseJSON(response);
-            console.log("sql post req:" + res.status);
-            if (res.status == 200) {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                var expires = (new Date(Date.now() + 1000 * 86400)).toUTCString();
-                localStorage.setItem("username",email);
-                // document.cookie = "username=" + email + ";expires=" + expires + ";path=/;";
-                location.href = "/guvi/profile.html"
-            } else if (res.status == 500) {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                return;
-            } else if (res.status == 202) {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                return;
-            }
-            else {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                return;
-            }
-        }
-    })
-    location.href = "/guvi/login.html";
-})
-
-$("#update").on('click',()=>{
-    $("#update").css("display","none");
-    $("#save").css("display","block");
-    console.log("clicked")
-    $("#content").html(`    <div class="table-responsive">  <table class="table  table-striped table-hover">
-            <tbody>
-                <tr>
-                    <td class="fw-bold">Name</td>
-                    <td><input type="text" class="form-control" name="name" value="${gdata.name}" id="name" placeholder="Enter your Name"> </td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Email</td>
-                    <td><input type="email" class="form-control" name="email" id="email" value="${gdata.email}" placeholder="Enter your Email"></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Phone number</td>
-                    <td><input type="number" class="form-control" name="p_num" id="p_num" value="${gdata.p_num}" placeholder="Enter Phone Number"></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">DOB</td>
-                    <td><input type="date" name="dob" class="form-control" id="dob" value="${gdata.dob}" placeholder="Enter your DOB"></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Address</td>
-                    <td><textarea name="address" class="form-control" id="address"  placeholder="Enter your Address">${gdata.address}</textarea></td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Pincode</td>
-                    <td><input type="text" class="form-control" name="pincode" value="${gdata.pincode}" id="pincode" placeholder="Enter your Pincode"></td>
-                </tr>
-            </tbody>
-
-        </table></div>`);
-})
-
-$("#save").on('click',()=>{
-    console.log("clicked save")
-    // var cookie_email = getCookie("username");
-    var cookie_email = localStorage.getItem("username");
-    if (cookie_email == "") {
-        location.href = "/guvi/login.html";
-        return;
-    }
-    var email = $('#email').val();
-    var name = $('#name').val();
-    var dob = $('#dob').val();
-    var address = $('#address').val();
-    var pincode = $('#pincode').val();
-    var p_num = $('#p_num').val();
-
-    var form_data = {
-        email: email,
-        dob: dob,
-        name: name,
-        address: address,
-        pincode: pincode,
-        p_num: p_num,
-        oldemail: cookie_email,
-        update: true
-    }
-
-    alert(form_data);
-    console.log(form_data)
-
-    $.ajax({
-        type: "POST",
-        url: "/guvi/php/register.php",
-        data: form_data,
-
-        success: (response) => {
-            console.log(response)
-            var res = jQuery.parseJSON(response);
-            console.log("sql post req:" + res.status);
-            if (res.status == 200) {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                var expires = (new Date(Date.now() + 1000 * 86400)).toUTCString();
-                localStorage.removeItem(cookie_email);
-                localStorage.setItem("username",email);
-                // document.cookie = "username=" + email + ";expires=" + expires + ";path=/;";
-                location.href = "/guvi/profile.html"
-            } else if (res.status == 500) {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                return;
-            } else if (res.status == 202) {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                return;
-            }
-            else {
-                console.log("sql res:" + res.message);
-                alert("sql res:" + res.message);
-                return;
-            }
-        }
-    })
-})
-
-$(document).ready(() => {
-    var email=localStorage.getItem("username");
-    // var email = getCookie("username");
-    var data;
-    console.log(email);
-    if (email == null) {
-        location.href = "/guvi/login.html";
-    } else {
-        var formdata = {
-            profile: true,
-            email: email
-        }
-        $.ajax({
-            type: "POST",
-            url: "/guvi/php/profile.php",
-            data: formdata,
-            success: (response) => {
-                console.log(response);
-                var res = jQuery.parseJSON(response);
-                // alert(res.status);
-                if (res.status == 200) {
-                    // alert(res.message);
-                    // console.log(res);
-                    data=res.user;
-                    gdata=res.user;
-                    // localStorage.setItem("user",JSON.stringify(data));
-                    setdata(data);
-                 } else if (res.status == 500) {
-                    alert(res.message);
-                } else if (res.status == 202) {
-                    alert(res.message);
-                } else if (res.status == 401) {
-                    alert(res.password);
-                }
-                else if (res.status == 404) {
-                    location.href = "/guvi/login.html";
-                }
-                else {
-                    alert(res.password);
-                }
-            }
-        })
-
-        const setdata=(data)=>{
-            $("#content").html(`      <div class="table-responsive">  <table class="table  table-striped table-hover">
-            <tbody>
-                <tr>
-                    <td class="fw-bold">Name</td>
-                    <td>${data.name}</td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Email</td>
-                    <td>${data.email}</td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Phone number</td>
-                    <td>${data.p_num}</td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">DOB</td>
-                    <td>${data.dob}</td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Address</td>
-                    <td>${data.address}</td>
-                </tr>
-                <tr>
-                    <td class="fw-bold">Pincode</td>
-                    <td>${data.pincode}</td>
-                </tr>
-            </tbody>
-
-        </table>
-        </div>`);
-        }   
-        
-    }
-
-
-})
-
-
-const getCookie = (cname) => {
-    let name = cname + "=";
-    let decodedCookie = decodeURIComponent(document.cookie);
-    let ca = decodedCookie.split(';');
-    for (let i = 0; i < ca.length; i++) {
-        let c = ca[i];
-        while (c.charAt(0) == ' ') {
-            c = c.substring(1);
-        }
-        if (c.indexOf(name) == 0) {
-            return c.substring(name.length, c.length);
-        }
-    }
-    return "";
+function setData() {
+  $(".view-mode")
+    .find("p:eq(0)")
+    .html("Name:" + data.name);
+  $(".view-mode")
+    .find("p:eq(1)")
+    .html("Email:" + data.email);
+  $(".view-mode")
+    .find("p:eq(2)")
+    .html("DOB:" + data.dob);
+  $(".view-mode")
+    .find("p:eq(3)")
+    .html("Age:" + data.age);
+  $(".view-mode")
+    .find("p:eq(4)")
+    .html("Contact:" + data.contact);
 }
+
+function showSuccessMessage(message) {
+  let successMessageContainer = $(".success-msg-container");
+  let successMessage = $(".success-msg");
+  successMessage.text(message);
+  successMessageContainer.show();
+  setTimeout(function () {
+    successMessageContainer.hide();
+  }, 5000);
+}
+
+function showErrorMessage(message) {
+  let errorMessageContainer = $(".err-msg-container");
+  let errorMessage = $(".err-msg");
+  errorMessage.text(message);
+  errorMessageContainer.show();
+  setTimeout(function () {
+    errorMessageContainer.hide();
+  }, 5000);
+}
+
+$(document).ready(function () {
+  $("#loading-message").show();
+  //check the session is valid or not
+  $.ajax({
+    type: "POST",
+    url: "http://localhost/Guvi-Task/php/profile.php",
+    data: { action: "valid-session", redisId: localStorage.getItem("redisId") },
+    success: function (response) {
+      let res = JSON.parse(response);
+
+      if (res.status != "success") {
+        showErrorMessage(
+          "Something went wrong..., Login Again to Continue , You Will Be Redirected"
+        );
+        setTimeout(() => {
+          window.location.href = "http://localhost/Guvi-Task/login.html";
+        }, 3000);
+      }
+    },
+  });
+
+  //get the data
+  $.ajax({
+    url: "http://localhost/Guvi-Task/php/profile.php",
+    type: "POST",
+    data: { action: "get-data", redisId: localStorage.getItem("redisId") },
+    success: function (response) {
+      $("#loading-message").hide();
+      let res = JSON.parse(response);
+      data = res.data[0];
+      setData();
+    },
+
+    error: function (xhr, status, error) {
+      console.log(error);
+    },
+  });
+
+  $(".edit-btn").click(function () {
+    $(".view-mode").hide();
+    $(".edit-mode").show();
+    $("#email").val(data.email);
+    $("#dob").val(data.dob);
+    $("#age").val(data.age);
+    $("#contact").val(data.contact);
+  });
+
+  $(".cancel-btn").click(function () {
+    $(".edit-mode").hide();
+    $(".view-mode").show();
+  });
+
+  $(".save-btn").click(function () {
+    var email = $("#email").val();
+    var dob = $("#dob").val();
+    var dobArray = dob.split("-");
+    dob = dobArray[2] + "-" + dobArray[1] + "-" + dobArray[0];
+    var age = $("#age").val();
+    var contact = $("#contact").val();
+
+    data = { ...data, dob, age, contact };
+    setData();
+
+    //send the updated data
+    $.ajax({
+      url: "http://localhost/Guvi-Task/php/profile.php",
+      type: "POST",
+      data: { action: "update-data", email, data },
+      success: function (response) {
+        $("#loading-message").hide();
+        console.log(response);
+      },
+
+      error: function (xhr, status, error) {
+        console.log(error);
+      },
+    });
+
+    $(".edit-mode").hide();
+    $(".view-mode").show();
+  });
+});
+
+let loading = true;
+//logout
+$("#logout-button").click(function (e) {
+  e.preventDefault();
+  $.ajax({
+    type: "POST",
+    url: "http://localhost/Guvi-Task/php/profile.php",
+    data: { action: "logout", redisId: localStorage.getItem("redisId") },
+    success: function (response) {
+      let res = JSON.parse(response);
+
+      if (res.status == "success") {
+        showSuccessMessage(res.message + " Redirecting to login page...");
+
+        setTimeout(function () {
+          window.location.href = "http://localhost/Guvi-Task/login.html";
+        }, 3000);
+      }
+    },
+  });
+
+  localStorage.removeItem("redisId");
+});
