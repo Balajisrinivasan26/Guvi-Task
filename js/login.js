@@ -18,8 +18,8 @@ $(document).ready(function() {
           let res = JSON.parse(response);
   
           if (res.status == "success") {
-            window.location.replace("http://127.0.0.1:5500/profile.html");
             localStorage.setItem("redisId", res.session_id);
+            window.location.replace("http://localhost/guvitask/profile.html");
           }
           
         },
