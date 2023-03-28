@@ -1,20 +1,18 @@
 let data;
+// alert("HI");
 
 function setData() {
   $(".view-mode")
     .find("p:eq(0)")
-    .html("Name:" + data.name);
+    .html("Email: " + data.email);
   $(".view-mode")
     .find("p:eq(1)")
-    .html("Email:" + data.email);
+    .html("DOB: " + data.dob);
   $(".view-mode")
     .find("p:eq(2)")
-    .html("DOB:" + data.dob);
-  $(".view-mode")
-    .find("p:eq(3)")
     .html("Age:" + data.age);
   $(".view-mode")
-    .find("p:eq(4)")
+    .find("p:eq(3)")
     .html("Contact:" + data.contact);
 }
 
@@ -43,17 +41,17 @@ $(document).ready(function () {
   //check the session is valid or not
   $.ajax({
     type: "POST",
-    url: "http://localhost/Guvi-Task/php/profile.php",
+    url: "http://localhost/guvitask/php/profile.php",
     data: { action: "valid-session", redisId: localStorage.getItem("redisId") },
     success: function (response) {
       let res = JSON.parse(response);
 
       if (res.status != "success") {
         showErrorMessage(
-          "Something went wrong..., Login Again to Continue , You Will Be Redirected"
+          "Login Again to Continue... You Will Be Redirected...."
         );
         setTimeout(() => {
-          window.location.href = "http://localhost/Guvi-Task/login.html";
+          window.location.href = "http://localhost/guvitask/login.html";
         }, 3000);
       }
     },
@@ -61,12 +59,13 @@ $(document).ready(function () {
 
   //get the data
   $.ajax({
-    url: "http://localhost/Guvi-Task/php/profile.php",
+    url: "http://localhost/guvitask/php/profile.php",
     type: "POST",
     data: { action: "get-data", redisId: localStorage.getItem("redisId") },
     success: function (response) {
       $("#loading-message").hide();
       let res = JSON.parse(response);
+      console.log(res);
       data = res.data[0];
       setData();
     },
@@ -79,10 +78,14 @@ $(document).ready(function () {
   $(".edit-btn").click(function () {
     $(".view-mode").hide();
     $(".edit-mode").show();
-    $("#email").val(data.email);
-    $("#dob").val(data.dob);
-    $("#age").val(data.age);
-    $("#contact").val(data.contact);
+    $("#email-input").val(data.email);
+    var dateString = data.dob;
+    var dateParts = dateString.split("-");
+    var dateObj = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+    var formattedDate = dateObj.toISOString().slice(0, 10);
+    $("#dob-input").val(formattedDate);
+    $("#age-input").val(data.age);
+    $("#contact-input").val(data.contact);
   });
 
   $(".cancel-btn").click(function () {
@@ -91,19 +94,19 @@ $(document).ready(function () {
   });
 
   $(".save-btn").click(function () {
-    var email = $("#email").val();
-    var dob = $("#dob").val();
+    var email = $("#email-input").val();
+    var dob = $("#dob-input").val();
     var dobArray = dob.split("-");
     dob = dobArray[2] + "-" + dobArray[1] + "-" + dobArray[0];
-    var age = $("#age").val();
-    var contact = $("#contact").val();
+    var age = $("#age-input").val();
+    var contact = $("#contact-input").val();
 
     data = { ...data, dob, age, contact };
     setData();
 
     //send the updated data
     $.ajax({
-      url: "http://localhost/Guvi-Task/php/profile.php",
+      url: "http://localhost/guvitask/php/profile.php",
       type: "POST",
       data: { action: "update-data", email, data },
       success: function (response) {
@@ -127,7 +130,7 @@ $("#logout-button").click(function (e) {
   e.preventDefault();
   $.ajax({
     type: "POST",
-    url: "http://localhost/Guvi-Task/php/profile.php",
+    url: "http://localhost/guvitask/php/profile.php",
     data: { action: "logout", redisId: localStorage.getItem("redisId") },
     success: function (response) {
       let res = JSON.parse(response);
@@ -136,7 +139,7 @@ $("#logout-button").click(function (e) {
         showSuccessMessage(res.message + " Redirecting to login page...");
 
         setTimeout(function () {
-          window.location.href = "http://localhost/Guvi-Task/login.html";
+          window.location.href = "http://localhost/guvitask/login.html";
         }, 3000);
       }
     },

@@ -6,6 +6,10 @@ $redis->connect('127.0.0.1', 6379);
 // $redis->connect('redis-13263.c270.us-east-1-3.ec2.cloud.redislabs.com', 13263);
 // $redis->auth('IzDni3FPBUerad8Q3F6qUdbOvBr42uBL');
 
+$manager = new MongoDB\Driver\Manager("mongodb+srv://balaji:1234@cluster0.6ywm1tz.mongodb.net/?retryWrites=true&w=majority");
+$database = "guviproj";
+$collection = "users";
+
 if (isset($_POST['action']) && $_POST['action'] === 'logout') {
    
     $redisId = $_POST["redisId"];
@@ -17,10 +21,12 @@ if (isset($_POST['action']) && $_POST['action'] === 'logout') {
 
     echo json_encode($response);
 }
+
 if (isset($_POST['action']) && $_POST['action'] === 'valid-session'){
   $redisId = $_POST["redisId"];
   if ($redis->get("session:$redisId")) {
     $sessionData = $redis->get("session:$redisId");
+    console.log($sessionData);
     $response = array(
         "status" => "success",
         "message" => "Session is valid",
@@ -41,12 +47,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'get-data'){
   $redisId = $_POST["redisId"];
   $sessionData = $redis->get("session:$redisId");
 
-  $email = $sessionData;
-  
-
-  $manager = new MongoDB\Driver\Manager("mongodb+srv://balaji:1234@cluster0.6ywm1tz.mongodb.net/?retryWrites=true&w=majority");
-  $database = "guvi";
-  $collection = "users";
+  $email = $sessionData;  
 
   $filter = ['email' => $email];
 
@@ -75,9 +76,8 @@ if (isset($_POST['action']) && $_POST['action'] === 'update-data'){
   $dob = $data['dob'];
   $contact = $data['contact'];
   $age = $data['age'];
-  $manager = new MongoDB\Driver\Manager("mongodb+srv://Gokul:19sep2002@cluster0.keckclg.mongodb.net/?retryWrites=true&w=majority");
-  $database = "guvi";
-  $collection = "users";
+
+
   $filter = ['email' => $email];
   $update = ['$set' => ['age' => $age, 'contact' => $contact , 'dob' => $dob]];
 

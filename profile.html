@@ -1,81 +1,84 @@
 <!DOCTYPE html>
-<html lang="en-us">
-    <head>
-        <meta charset="UTF-8">
-        <title>User Profile Page
-        </title>
-        <link rel="stylesheet" href="./css/profile.css">
-        <script type="text/javascript" lang="javascript" src="./js/profile.js"></script>
-    </head>
-       
-    <body>
-        <h1>Update Details</h1>
-        <div class="container">
-          <!-- <div class="img"><img src="./assets/update.png"></div> -->
-            <div class="row">
-                <div class="col-10">
-                    <label for="fname">First Name:</label>
-                </div>
-                <div class="col-90">
-                    <input type="text" id="fname" name="firstname" placeholder="Enter your first name">
-                    
-                </div>
-                
-            </div>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/index.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="./css/profile.css" />
+    <title>Profile</title>
+  </head>
+  <body>
+    <div class="profile-container">
+      <div class="profile-header">
+        <h1>Profile</h1>
+        <div class="logout-btn-container" id="logout-button">
+          <!-- <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="icon"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+            />
+          </svg> -->
+          <button class="logout-button">Logout</button>
+        </div>
+      </div>
+      <div id="loading-message"><p>Fetching Your Details....</p></div>
 
-            <div class="row">
-                <div class="col-10">
-                    <label for="lname">Last Name:</label>
-                </div>
-                <div class="col-90">
-                    <input type="text" id="lname" name="lastname" placeholder="Enter your last name">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-10">
-                    <label for="email">Email:</label>
-                </div>
-                <div class="col-90">
-                    <input type="email" id="email" name="email" placeholder="it should contain @,.">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-10">
-                    <label for="mobile">Mobile:</label>
-                </div>
-                <div class="col-90">
-                    <input type="tel" id="mobile" name="mobile" placeholder="only 10 digits are allowed">
-                </div>
-            </div>
-            <div class="row">
-              <div class="col-10">
-                  <label for="mobile">Age:</label>
-              </div>
-              <div class="col-90">
-                  <input type="tel" id="age" name="age" placeholder="">
-              </div>
-          </div>
-            
-            <div class="row">
-                <div class="col-10">
-                    <label for="dob">Date Of Birth:</label>
-                </div>
-                <div class="col-90">
-                    <input type="Date" id="dob" name="dob">
-                </div>
-            </div>
-           
-            <div class="row">
-                <div class="col-10">
-                    <label for="password">Password:</label>
-                </div>
-                <div class="col-90">
-                    <input type="password" id="password" name="password" maxlength="8">
-                </div>
-            </div>
-            <div class="row">
-                <input type="submit" value="Update" onclick="SaveStudentDetails()">
-            </div>  
-          </div>  
-    </body>
+      <div class="success-msg-container">
+        <p class="success-msg"></p>
+      </div>
+
+      <div class="err-msg-container">
+        <p class="err-msg"></p>
+      </div>
+      <div class="center-div">
+        <div class="profile-img-wrapper">
+          <img
+            src="./assets/profilepic.png"
+            alt="profile-pic"
+            class="profile-pic"
+          />
+        </div>
+        <!-- view mode --></div>
+        <div class="view-mode">
+          <div class="card">
+          <p><strong>Email:</strong></p>
+          <p><strong>DOB:</strong></p>
+          <p><strong>AGE:</strong></p>
+          <p><strong>CONTACT:</strong></p>
+          <button class="edit-btn btn">Edit</button>
+        </div></div>
+
+        <!-- edit mode -->
+        <div class="edit-mode" style="display: none">
+          <div class="card">
+          <label for="email-input"><strong>Email:</strong></label>
+          <input type="text" id="email-input" disabled class="form-input" />
+          <br />
+          <label for="dob-input"><strong>DOB:</strong></label>
+          <input type="date" id="dob-input" class="form-input" />
+          <br />
+          <label for="age-input"><strong>AGE:</strong></label>
+          <input type="text" id="age-input" class="form-input" />
+          <br />
+          <label for="contact-input"><strong>CONTACT:</strong></label>
+          <input type="text" id="contact-input" class="form-input" />
+          <br />
+          <button class="save-btn btn">Save</button>
+          <button class="cancel-btn btn">Cancel</button>
+        </div>
+      </div>
+      </div>
+    </div>
+  </body>
+  <script src="./js/profile.js" defer></script>
 </html>

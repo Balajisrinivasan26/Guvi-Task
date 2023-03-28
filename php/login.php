@@ -11,10 +11,6 @@ if (!$conn) {
 }
 $redis = new Redis();
 $redis->connect('127.0.0.1', 6379);
-
-ini_set('session.save_handler', 'redis');
-ini_set('session.save_path', 'tcp://127.0.0.1:6379');
-
 $email = $_POST["email"];
 $password = $_POST["password"];
 
@@ -32,17 +28,20 @@ if (mysqli_num_rows($result) == 0) {
         $session_id = uniqid();
         $redis->set("session:$session_id", $email);
         $redis->expire("session:$session_id", 10*60);
-       
+        
         $payload = array(
             "email" => $row['email'],
             "expires_at" => time() + 3600 // Expires in 1 hour
         );
+
         
         $access_token = base64_encode(json_encode($payload));
         $response = array(
             "status" => "success",
             "message" => "Login successful",
-            "access_token" => $access_token
+            // "access_token" => $access_token
+            'session_id' => $session_id
+
         );
         echo json_encode($response);
     } else {

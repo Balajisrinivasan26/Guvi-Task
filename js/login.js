@@ -18,7 +18,10 @@ $(document).ready(function() {
           let res = JSON.parse(response);
   
           if (res.status == "success") {
+            console.log("gandha");
             localStorage.setItem("redisId", res.session_id);
+            localStorage.setItem("email",formData.email);
+            localStorage.setItem("password",formData.password);
             window.location.replace("http://localhost/guvitask/profile.html");
           }
           
@@ -26,7 +29,7 @@ $(document).ready(function() {
         error: function (jqXHR, textStatus, errorThrown) {
         
             alert("Username or Password entered Wrongly");
-            window.location.replace("http://127.0.0.1:5500/login.html");
+            window.location.replace("http://localhost/guvitask/login.html");
           console.log(errorThrown); // log error message to console
         },
       });
